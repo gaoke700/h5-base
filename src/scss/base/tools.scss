@@ -1,0 +1,17 @@
+
+//375的设计稿分为10rem
+@function px2rem($px){
+  @return $px / 75 * 2rem;
+}
+
+//单行/多行省略号
+@mixin ellipsis($lineClamp:1){
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp:$lineClamp;
+}
+
+//三角箭头
+
