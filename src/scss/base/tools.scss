@@ -5,13 +5,23 @@
 }
 
 //单行/多行省略号
-@mixin ellipsis($lineClamp:1){
+@mixin ellipsis($lineClamp:1, $lineHeight:px2rem(18)){
   text-overflow: ellipsis;
   display: -webkit-box;
   overflow: hidden;
+  white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp:$lineClamp;
+  line-height: $lineHeight;
+  height: $lineHeight * $lineClamp;
 }
 
-//三角箭头
-
+//三角箭头(矩形旋转方法只能做直角，不好用)
+@mixin angle($dir,$px,$color,$default:px2rem(12)){
+  width:0;
+  height:0;
+  //content:'';
+  display:inline-block;
+  border:$default solid transparent;
+  #{$dir}:$px solid $color;
+}
