@@ -1,0 +1,117 @@
+<meta charset="UTF-8">
+<title><{$title}></title>
+<link rel="dns-prefetch" href="http://static.fy.xyunqi.com">
+<link rel="dns-prefetch" href="//res.wx.qq.com">
+<link rel="dns-prefetch" href="//img.alicdn.com">
+<link rel="dns-prefetch" href="<{$s3_bucket_url}>">
+<link rel="dns-prefetch" href="//hm.baidu.com">
+<meta name="format-detection" content="telephone=no" />
+<{if $phone_type == 'ios'}> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> <{/if}>
+<link rel="stylesheet" href="css/base2.css">
+<script>
+    (function(win) {
+        var doc = win.document;
+        var docEl = doc.documentElement;
+        var metaEl = doc.querySelector('meta[name="viewport"]');
+        var flexibleEl = doc.querySelector('meta[name="flexible"]');
+        var dpr = 0;
+        var scale = 0;
+        var tid;
+        function isPCFn(){
+            var userAgentInfo = navigator.userAgent;
+            var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+            }
+            return flag;
+        }
+        var isPc = isPCFn();
+
+//        if (metaEl) {
+//            var match = metaEl.getAttribute('content').match(/initial\-scale=([\d\.]+)/);
+//            if (match) {
+//                scale = parseFloat(match[1]);
+//                dpr = parseInt(1 / scale);
+//            }
+//        } else if (flexibleEl) {
+//            var content = flexibleEl.getAttribute('content');
+//            if (content) {
+//                var initialDpr = content.match(/initial\-dpr=([\d\.]+)/);
+//                var maximumDpr = content.match(/maximum\-dpr=([\d\.]+)/);
+//                if (initialDpr) {
+//                    dpr = parseFloat(initialDpr[1]);
+//                    scale = parseFloat((1 / dpr).toFixed(2));
+//                }
+//                if (maximumDpr) {
+//                    dpr = parseFloat(maximumDpr[1]);
+//                    scale = parseFloat((1 / dpr).toFixed(2));
+//                }
+//            }
+//        }
+
+        if (!dpr && !scale) {
+            var isAndroid = win.navigator.appVersion.match(/android/gi);
+            var isIPhone = win.navigator.appVersion.match(/iphone/gi);
+            var devicePixelRatio = win.devicePixelRatio;
+            if (isIPhone) {
+                // iOS下，对于2和3的屏，用2倍的方案，其余的用1倍方案
+                if (devicePixelRatio >= 3 && (!dpr || dpr >= 3)) {
+                    dpr = 3;
+                } else if (devicePixelRatio >= 2 && (!dpr || dpr >= 2)){
+                    dpr = 2;
+                } else {
+                    dpr = 1;
+                }
+                docEl.classList.add('ios');
+            } else {
+                // 其他设备下，仍旧使用1倍的方案
+                dpr = 1;
+            }
+            scale = 1 / dpr;
+
+            if (isAndroid){
+                docEl.classList.add('android');
+            }
+            if(isPc){
+                docEl.classList.add('pc');
+            }
+        }
+
+        docEl.setAttribute('data-dpr', dpr);
+        if (!metaEl) {
+            metaEl = doc.createElement('meta');
+            metaEl.setAttribute('name', 'viewport');
+            metaEl.setAttribute('content', 'initial-scale=' + scale + ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
+            if (docEl.firstElementChild) {
+                docEl.firstElementChild.appendChild(metaEl);
+            } else {
+                var wrap = doc.createElement('div');
+                wrap.appendChild(metaEl);
+                doc.write(wrap.innerHTML);
+            }
+        }
+
+        function refreshRem(){
+            var width = isPc ? '540' : docEl.getBoundingClientRect().width;
+            if (width / dpr > 540) {
+                width = 540 * dpr;
+            }
+            var rem = width / 10;
+            docEl.style.fontSize = rem + 'px';
+        }
+
+        win.addEventListener('resize', function() {
+            clearTimeout(tid);
+            tid = setTimeout(refreshRem, 100);
+        }, false);
+        win.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                clearTimeout(tid);
+                tid = setTimeout(refreshRem, 100);
+            }
+        }, false);
+
+        refreshRem();
+    })(window);
+</script>

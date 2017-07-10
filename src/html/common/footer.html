@@ -1,0 +1,174 @@
+<div class="g-footer-box">
+    <{if !$disable_quick_link}>
+    <!-- 快捷入口 -->
+    <div class="g-faster-in">
+        <a href="/index.html">店铺首页</a>
+        <a href="/?member.html">会员中心</a>
+        <{if $promotion_set}>
+            <a href="<{link ctl='tools' act='weixin_code'}>">关注我们</a>
+        <{/if}>
+        <{if $muiltStore_is_open}>
+            <a href="<{link ctl='member' act='storeList'}>">线下门店</a>
+        <{/if}>
+        <{if $checkcert}>
+            <a href="<{link ctl='member' act='store_cert_detail'}>">店铺认证</a>
+        <{/if}>
+            <a href="<{link ctl='tools' act='complain'}>">投诉</a>
+    </div>
+    <{/if}>
+    
+    <!--版权-->
+    <{if $indexFlag == '1'}>
+    <{if $indexTeegonFlag == '1'}>
+    <div class="g-copyright"><div class="g-copyright-logo"><a href="javascript:void(0);"><img inline src="images/details/yunqi-logo.png"></a></div></div>
+    <div class="g-copyright-text g-copyright-textt"></div>
+    <{else}>
+    <div class="g-copyright"><div class="g-copyright-logo"><a href="http://m.xyunqi.com/products/wsc"><img inline src="images/details/yunqi-logo.png"></a></div></div>
+    <div class="g-copyright-text g-copyright-textt"></div>
+    <{/if}>
+    <{/if}>
+</div>
+
+<!--是否开启微信分享模式-->
+<{if $show_wx_share}>
+<div style="display:none;" id="data-wx">{"wx_title":"<{$wxData.wx_title}>","wx_desc":"<{$wxData.wx_desc}>","wx_imgUrl":"<{$wxData.wx_imgUrl}>","wx_link":"<{$wxData.wx_link}>","wx_appid":"<{$wxData.wx_appid}>","timestamp":"<{$wxData.timestamp}>","nonceStr":"<{$wxData.noncestr}>","signature":"<{$wxData.signature}>","url":"<{$wxData.wx_link}>"}</div>
+<{/if}>
+
+<script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="js/base.js"></script>
+<!--#import js/config.js #source-->
+<script>
+$(function(){
+    $('.g-copyright').on('doubleTap', '.g-copyright-textt', function(){
+        $(this).html('{# echo(theme_config.server_ip)#}');
+    });
+})
+</script>
+<script>
+    /*
+     * 注意：
+     * 1. 所有的JS接口只能在公众号绑定的域名下调用，公众号开发者需要先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。
+     * 2. 如果发现在 Android 不能分享自定义内容，请到官网下载最新的包覆盖安装，Android 自定义分享接口需升级至 6.0.2.58 版本及以上。
+     * 3. 常见问题及完整 JS-SDK 文档地址：http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html
+     *
+     * 开发中遇到问题详见文档“附录5-常见错误及解决办法”解决，如仍未能解决可通过以下渠道反馈：
+     * 邮箱地址：weixin-open@qq.com
+     * 邮件主题：【微信JS-SDK反馈】具体问题
+     * 邮件内容说明：用简明的语言描述问题所在，并交代清楚遇到该问题的场景，可附上截屏图片，微信团队会尽快处理你的反馈。
+     */
+    wx.config({
+        debug: false,
+        appId: "<{$wxData.wx_appid}>",
+        timestamp: "<{$wxData.timestamp}>",
+        nonceStr: "<{$wxData.noncestr}>",
+        signature: "<{$wxData.signature}>",
+        jsApiList: [
+            "checkJsApi",
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage",
+            "onMenuShareQQ",
+            "onMenuShareWeibo",
+            "onMenuShareQZone",
+            "hideMenuItems",
+            "showMenuItems",
+            "hideAllNonBaseMenuItem",
+            "showAllNonBaseMenuItem",
+            "translateVoice",
+            "startRecord",
+            "stopRecord",
+            "onVoiceRecordEnd",
+            "playVoice",
+            "onVoicePlayEnd",
+            "pauseVoice",
+            "stopVoice",
+            "uploadVoice",
+            "downloadVoice",
+            "chooseImage",
+            "previewImage",
+            "uploadImage",
+            "downloadImage",
+            "getNetworkType",
+            "openLocation",
+            "getLocation",
+            "hideOptionMenu",
+            "showOptionMenu",
+            "closeWindow",
+            "scanQRCode",
+            "chooseWXPay",
+            "openProductSpecificView",
+            "addCard",
+            "chooseCard",
+            "openCard"
+        ]
+    });
+    wx.ready(function(){
+        var wx_title  = "<{$wxData.wx_title}>",
+            wx_desc   = "<{$wxData.wx_desc}>",
+            wx_imgUrl = "<{$wxData.wx_imgUrl}>",
+            wx_link   = "<{$wxData.wx_link}>",
+            wx_dataUrl   = '<{link ctl="default" act="share_count"}>';
+        wx.onMenuShareAppMessage({
+            title: wx_title,
+            desc: wx_desc,
+            link: wx_link,
+            imgUrl: wx_imgUrl,
+            success: function () {
+                wxCallback();
+            }
+        });
+        // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+        wx.onMenuShareTimeline({
+            title: wx_title,
+            link: wx_link,
+            imgUrl: wx_imgUrl,
+            success: function () {
+                wxCallback();
+            }
+        });
+        // 2.3 监听“分享到QQ”按钮点击、自定义分享内容及分享结果接口
+        wx.onMenuShareQQ({
+            title: wx_title,
+            desc: wx_desc,
+            link: wx_link,
+            imgUrl: wx_imgUrl,
+            success: function () {
+                wxCallback();
+            }
+        });
+        // 2.4 监听“分享到微博”按钮点击、自定义分享内容及分享结果接口
+        wx.onMenuShareWeibo({
+            title: wx_title,
+            desc: wx_desc,
+            link: wx_link,
+            imgUrl: wx_imgUrl,
+            success: function () {
+                wxCallback();
+            }
+        });
+    });
+    var wxCallbackJson = {
+        share_count: function(){
+            // var url = dataWX.url;
+            var url = '<{link ctl="default" act="share_count"}>';
+            var params = {};
+            $.ajax({
+                url:url,
+                type:"post",
+                success:function(res){
+                    console.log(res);
+                }
+            });
+        }
+    };
+    function wxCallback(){
+        for(var i in wxCallbackJson){ //i表示属性，wxCallbackJson表示对象，此for循环就是遍历对象上的属性
+            wxCallbackJson[i]();
+        }
+    }
+
+    //底部导航的数据
+    var footerNavData={
+        nowPage:'<{$usePage}>',
+        data:'<{$navData}>'
+    };
+</script>

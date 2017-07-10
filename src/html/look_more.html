@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <{include file="../header_common.html"}>
+        <link rel="stylesheet" href="css/page/look-more.css">
+    </head>
+    <body>
+        <div class="w375">
+            <{include file="pc_preview_common.html"}>
+            <div class="search-main"></div>
+            <div class="product-main"></div>
+        </div>
+        <{include file="../footer_common.html"}>
+        <script>
+            seajs.use(['js/page/look-more.js'], function(index){
+                $(document).ready(function(){
+                    index.init();
+                });
+            });
+        </script>
+    </body>
+</html>
